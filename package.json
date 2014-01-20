@@ -1,0 +1,25 @@
+{
+  "name": "reactive-backbone",
+  "version": "0.0.1",
+  "description": "Reactive Collection helpers for Backbone",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git://github.com/bluespeckfinancial/reactive-backbone.git"
+  },
+  "author": "Dave Tonge",
+  "license": "BSD",
+  "readmeFilename": "README.md",
+  "gitHead": "9ff40e30420ce76bd05185c7bb7e35b7475c2ba1",
+  "bugs": {
+    "url": "https://github.com/bluespeckfinancial/reactive-backbone/issues"
+  },
+  "dependencies": {
+    "underscore-query": "~0.4.0",
+    "backbone": "~1.1.0",
+    "underscore": "~1.5.2"
+  }
+}
