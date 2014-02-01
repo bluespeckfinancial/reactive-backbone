@@ -14,10 +14,5 @@
     "bower_components",
     "test",
     "tests"
-  ],
-  "dependencies": {
-    "backbone": "~1.1.0",
-    "underscore": "~1.5.2",
-    "underscore-query": "/host/sites/underscore-query"
-  }
+  ]
 }
