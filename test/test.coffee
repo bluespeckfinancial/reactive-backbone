@@ -1,5 +1,5 @@
 _ = require "underscore"
-Collection = require "../src/reactive-backbone"
+Collection = require "../reactive-backbone"
 {ok, equal} = require "assert"
 
 make = ->
