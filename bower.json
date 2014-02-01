@@ -6,7 +6,7 @@
     "Dave Tonge <dave@bluespeck>"
   ],
   "description": "Reactive Collection helpers for Backbone",
-  "main": "reactive-backbone.js",
+  "main": "reactive-backbone.coffee",
   "license": "MIT",
   "ignore": [
     "**/.*",
