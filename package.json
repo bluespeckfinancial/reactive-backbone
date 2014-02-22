@@ -2,7 +2,7 @@
   "name": "reactive-backbone",
   "version": "0.0.1",
   "description": "Reactive Collection helpers for Backbone",
-  "main": "index.js",
+  "main": "reactive-backbone.coffee",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
