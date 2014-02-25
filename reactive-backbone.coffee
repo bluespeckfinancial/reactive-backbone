@@ -3,10 +3,9 @@
   It expects underscore, underscore_query & Backbone to be available globally.
 ###
 
-root = this
-_ = root._
+_ = (window ? global)._
 
-class QueryCollection
+class ReactiveCollection
 
   # Main Query method
   query: (params) ->
@@ -223,9 +222,9 @@ class QueryCollection
 if require.brunch
   # This is how the module is exposed in brunch for client side use
   require.register "yw.reactive.collection", (exports, require, module) ->
-    module.exports = QueryCollection
+    module.exports = ReactiveCollection
 
 else
   _ = require("underscore")
   require("underscore-query")(_)
-  module.exports = QueryCollection
+  module.exports = ReactiveCollection
