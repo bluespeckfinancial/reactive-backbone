@@ -221,7 +221,7 @@ class ReactiveCollection
 
 if require.brunch
   # This is how the module is exposed in brunch for client side use
-  require.register "yw.reactive.collection", (exports, require, module) ->
+  require.register "reactive-backbone", (exports, require, module) ->
     module.exports = ReactiveCollection
 
 else
