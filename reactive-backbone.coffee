@@ -105,7 +105,7 @@ class ReactiveCollection
     #parent.on "all", (e) -> console.log "filtered event: #{e}"
     #paged.on "all", (e) -> console.log "paged event: #{e}"
 
-    paged.listenTo parent, "add sort reset remove", ->
+    paged.listenTo parent, "add sort:debounced reset remove", ->
       paged.numberOfPages = Math.ceil(parent.length / num)
       if paged.page > paged.numberOfPages
         paged.page = paged.numberOfPages
