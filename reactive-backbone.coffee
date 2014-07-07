@@ -45,6 +45,8 @@ class ReactiveCollection extends Backbone.Collection
         filtered._query = builder.tester()
         # In case the filter is set later we need to ensure any existing models are updated
         filtered.set _.query(parent.models, filtered._query, "get")
+        # Return the filtered collection
+        filtered
 
     # Listeners are added to the parent collection
     filtered.listenTo parent,
