@@ -222,6 +222,142 @@ class ReactiveCollection extends Backbone.Collection
     @trigger("sort")
     this
 
+  addGrouping: (name, groupFn) ->
+    @_displayCollection ?= @filteredCollection({})
+    @_groups ?= {}
+    @_groups[name] = {}
+
+    add = (model) =>
+      key = groupFn(model) ? "Unknown"
+      @_groups[name][model.cid] = key
+
+    remove = (model) =>
+      delete @_groups[name][model.cid]
+
+    change = (model) =>
+      key = groupFn(model)
+      @_groups[name][model.cid] = key
+
+    @on {add, remove, change}
+    @each add
+
+
+  useGrouping: (name) ->
+    name ?= @_displayCollection.currentGrouping
+    throw new Error("No grouping with: #{name} found") unless @_groups[name]
+    indexMap = {}
+    {idAttribute} = @model.prototype
+    mapFn = (title, i) ->
+      indexMap[title] = i
+      data = {name, title, isGroupTitle: true}
+      data[idAttribute] = name + title
+      data
+    keys = _.chain(@_groups[name]).values().unique().map(mapFn).value()
+    @_displayCollection.currentGrouping = name
+    @_displayCollection.remove @_displayCollection.query({isGroupTitle: true, name:$ne:name})
+    console.log @_displayCollection.length
+    if @_displayCollection.length is 0 or @_displayCollection.length is keys.length
+      @_displayCollection.add(@models)
+    @_displayCollection.add(keys)
+    @_displayCollection.comparator = (model) =>
+      if model.get("isGroupTitle")
+        indexMap[model.get("title")]
+      else
+        (indexMap[@_groups[name][model.cid]] ? (keys.length + 1)) + 0.5
+
+    @_displayCollection.sort()
+
+  zoomGrouping: (name) ->
+    name ?= @_displayCollection.currentGrouping
+    {idAttribute} = @model.prototype
+    mapFn = (title, i) ->
+      data = {name, title, isGroupTitle: true}
+      data[idAttribute] = name + title
+      data
+    keys = _.chain(@_groups[name]).values().unique().map(mapFn).value()
+    @_displayCollection.set(keys)
+
+
+  removeGrouping: (comparator) ->
+    @_displayCollection.remove @_displayCollection.where({isGroupTitle: true})
+    @_displayCollection.comparator = comparator
+    @_displayCollection.sort()
+
+  mappedCollection: (options) ->
+    # most common use case is a unique map otherwise you only want
+    if _.isFunction(options)
+      mapFn = options
+    else
+      {mapFn, collection} = options
+    collection ?= ReactiveCollection
+    mapped = new collection
+    idAttribute = mapped.model.idAttribute
+
+    idMap = {}
+    cidMap = {}
+
+    add = (model) ->
+      data = mapFn(model)
+      id = data[idAttribute]
+      cidMap[model.cid] = id
+      if idMap[id]
+        idMap[id].push model.cid
+      else
+        idMap[id] = [model.cid]
+        mapped.push data
+
+    remove = (model) ->
+      id = cidMap[model.cid]
+      if idMap[id].length > 1
+        idMap[id] = _.without(idMap[id], model.cid)
+      else
+        mapped.remove(id)
+        delete idMap[id]
+      delete cidMap[model.cid]
+
+    change = (model) ->
+      data = mapFn(model)
+      id = data[idAttribute]
+      oldId = cidMap[model.cid]
+      return if id is oldId
+      # Remove old id
+      if idMap[oldId].length > 1
+        idMap[oldId] = _.without(idMap[oldId], model.cid)
+      else
+        mapped.remove(oldId)
+        delete idMap[oldId]
+
+      # Assign new
+      cidMap[model.cid] = id
+      if idMap[id]
+        idMap[id].push model.cid
+      else
+        idMap[id] = [model.cid]
+        mapped.push data
+
+
+
+
+
+  addSort: (name, sortFn) ->
+    add = (model) ->
+      model._sortValues ?= {}
+      model._sortValues[name] = sortFn(model)
+
+    @on {add, change:add}
+    @each add
+
+  useSort: (name) ->
+    @comparator = (left, right) ->
+      a = left._sortValues[name]
+      b = right._sortValues[name]
+      if a isnt b
+        if (a > b or not a?) then return 1
+        if (a < b or not b?) then return -1
+      0
+    @sort()
+
+
 if require.brunch
   # This is how the module is exposed in brunch for client side use
   require.register "reactive-backbone", (exports, require, module) ->
