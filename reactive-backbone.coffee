@@ -142,7 +142,7 @@ class ReactiveCollection extends Backbone.Collection
     paged.goto = (id) ->
       model = parent.get(id)
       index = parent.indexOf(model)
-      if index
+      if index?
         paged.index = index
         [start,end] = extent(paged.index)
         paged.set parent.models[start...end]
