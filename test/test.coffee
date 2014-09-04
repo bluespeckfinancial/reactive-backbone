@@ -68,6 +68,26 @@ describe "zoomed collection", ->
     d.minus()
     equal d.first(), a.last()
 
+  describe "when zooming to the start of the collection", ->
+
+    models = undefined
+    reactiveCollection = undefined
+    zoomedCollection = undefined
+    firstInView = undefined
+
+    beforeEach ->
+      models = [{}, {}, {}]
+      reactiveCollection = new Collection models
+      zoomedCollection = reactiveCollection.zoomedCollection(1)
+
+      firstInView = zoomedCollection.goto(reactiveCollection.at(0))
+
+    it "should return the first model from the parent collection", ->
+      equal firstInView, reactiveCollection.at(0)
+
+    it "should set the correct models on the zoomed collection", ->
+      equal zoomedCollection.at(0), firstInView
+      equal zoomedCollection.length, 1
 
 describe "filter and page", ->
 
