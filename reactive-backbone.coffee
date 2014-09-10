@@ -336,9 +336,6 @@ class ReactiveCollection extends Backbone.Collection
         mapped.push data
 
 
-
-
-
   addSort: (name, sortFn) ->
     add = (model) ->
       model._sortValues ?= {}
