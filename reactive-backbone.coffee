@@ -118,15 +118,20 @@ class ReactiveCollection extends Backbone.Collection
     paged
 
   # Similar to paged collectiom, but allows changing by one model at a time rather than page
-  zoomedCollection: (num = 5) ->
+  zoomedCollection: (num = 5, startIndex) ->
     parent = @
+    if startIndex?
+      firstIndex = startIndex
+    else
+      firstIndex = parent.length / 2
+
     extent = (index) ->
       start = index
       end = start + num
       [start,end]
-    [start,end] = extent(parent.length / 2)
+    [start,end] = extent(firstIndex)
     paged = new parent.constructor parent.models[start...end]
-    paged.index = parent.length / 2
+    paged.index = firstIndex
     paged.plus = ->
       if (paged.index + ((num + 1) / 2)) < parent.length
         paged.index +=1
